@@ -2,7 +2,9 @@
 
 **Status:** In Development
 
-This project is a Python-based application designed to find spoken keywords in noisy audio files. It features a custom-built Digital Signal Processing (DSP) module for audio cleaning and leverages a self-hosted, state-of-the-art Automatic Speech Recognition (ASR) model (OpenAI's Whisper) for transcription. The primary goal is to demonstrate and quantify the improvement in ASR accuracy achieved by our DSP pre-processing, creating a highly usable open-vocabulary search tool that performs well in real-world conditions.
+This project is a Python-based application designed to find spoken keywords in noisy audio files. It features custom-built Digital Signal Processing (DSP) modules for audio cleaning and leverages a self-hosted, state-of-the-art Automatic Speech Recognition (ASR) model (OpenAI's Whisper) for transcription.
+
+This project investigates the critical trade-off between noise reduction and the introduction of processing artifacts that can degrade ASR performance. Our primary goal is to implement, compare, and tune classic DSP noise reduction algorithms to **maximize the final ASR accuracy**, not just subjective listening quality.
 
 This project is being developed for the CPE113L-1 Digital Signal Processing (Laboratory) course.
 
@@ -10,10 +12,10 @@ This project is being developed for the CPE113L-1 Digital Signal Processing (Lab
 
 ## 🚀 Key Features
 
-* **DSP Noise Reduction:** Implements a custom spectral subtraction algorithm to clean audio signals before recognition.
+* **DSP Noise Reduction:** Implements and compares classic DSP noise reduction algorithms (**Spectral Subtraction** and **Wiener Filtering**) to clean audio signals before recognition.
 * **Self-Hosted ASR:** Uses OpenAI's Whisper model locally for fast, private, and powerful speech-to-text transcription.
 * **Open-Vocabulary Search:** Allows the user to search for any typed keyword, not just a pre-defined set.
-* **Performance Analysis:** Designed to empirically measure the accuracy improvement provided by the DSP cleaning module.
+* **Performance Analysis:** Designed to empirically measure and compare the ASR accuracy improvement provided by each DSP cleaning module.
 
 ---
 
@@ -21,7 +23,7 @@ This project is being developed for the CPE113L-1 Digital Signal Processing (Lab
 
 The system operates as a sequential pipeline:
 
-`[Noisy Audio File]` → `[Our DSP Cleaning Module]` → `[Cleaned Audio]` → `[Whisper ASR Model]` → `[Timestamped Transcript]` → `[Text Search]` → `[Final Timestamps]`
+`[Noisy Audio File]` → `[Our DSP Cleaning Module (SS or Wiener)]` → `[Cleaned Audio]` → `[Whisper ASR Model]` → `[Timestamped Transcript]` → `[Text Search]` → `[Final Timestamps]`
 
 ---
 
@@ -98,14 +100,14 @@ pip install -r requirements.txt
 
 ## ▶️ How to Use
 
-The main script is designed to be run from the command line.
+The main script is designed to be run from the command line, with an option to select the cleaning method.
 
 ```bash
-python src/main.py --audio_file "path/to/your/audio.wav" --keyword "your_keyword"
+python src/main.py --audio_file "path/to/your/audio.wav" --keyword "your_keyword" --method "spectral_subtraction"
 ```
 **Example:**
 ```bash
-python src/main.py --audio_file "data/raw/noisy_lecture.wav" --keyword "Fourier"
+python src/main.py --audio_file "data/raw/noisy_lecture.wav" --keyword "Fourier" --method "wiener"
 ```
 
 ---
@@ -118,21 +120,22 @@ This is our high-level plan to guide the development process.
 - [ ] Finalize project scope and choose target noisy audio for testing. *(Assigned to: All)*
 - [ ] Set up the complete ASR environment (PyTorch+CUDA, FFmpeg, Whisper). *(Assigned to: ____)*
 - [ ] **Milestone:** Successfully transcribe a clean audio file using a "Hello Whisper" script. *(Assigned to: ____)*
-- [ ] Research and understand the Spectral Subtraction algorithm. *(Assigned to: ____)*
+- [ ] Research and understand **Spectral Subtraction** and **Wiener Filtering** algorithms. *(Assigned to: ____)*
 
 ### **Week 2: DSP Module Implementation**
-- [ ] Write the Python code for the Spectral Subtraction algorithm in `src/dsp/noise_reduction.py`. *(Assigned to: ____)*
-- [ ] Create a test notebook in the `notebooks/` folder to test the cleaning function. *(Assigned to: ____)*
-- [ ] **Milestone:** Successfully clean a noisy audio file and verify the result by listening and viewing its spectrogram. *(Assigned to: ____)*
+- [ ] Write the Python code for the **Spectral Subtraction** algorithm in `src/dsp/noise_reduction.py`. *(Assigned to: ____)*
+- [ ] Implement a simplified **Wiener Filtering** algorithm in the same module. *(Assigned to: ____)*
+- [ ] Create a test notebook in `notebooks/` to test both cleaning functions. *(Assigned to: ____)*
+- [ ] **Milestone:** Successfully clean a noisy audio file using **both methods** and verify the results by listening and viewing spectrograms. *(Assigned to: ____)*
 
 ### **Week 3: Integration & Experimentation**
 - [ ] Write the ASR wrapper in `src/asr/transcribe.py` to handle Whisper transcription and timestamp extraction. *(Assigned to: ____)*
-- [ ] Write the `main.py` script to connect the DSP module and ASR module. *(Assigned to: ____)*
+- [ ] Write the `main.py` script to connect the DSP module and ASR module, allowing method selection. *(Assigned to: ____)*
 - [ ] **Milestone:** Run the full pipeline on a noisy audio file and successfully get a timestamped transcript. *(Assigned to: ____)*
-- [ ] Design and run the final experiment (compare accuracy with and without the DSP module). *(Assigned to: All)*
+- [ ] **Design and run the final experiment: compare ASR accuracy on 1) the original noisy audio, 2) audio cleaned with Spectral Subtraction, and 3) audio cleaned with Wiener Filtering.** *(Assigned to: All)*
 
 ### **Week 4: Finalization**
-- [ ] Analyze the experiment results and create plots/tables. *(Assigned to: ____)*
+- [ ] Analyze the experiment results and create plots/tables, focusing on comparing the effectiveness of the two DSP methods. *(Assigned to: ____)*
 - [ ] Write the final project report. *(Assigned to: All)*
 - [ ] Create the final presentation slides. *(Assigned to: All)*
 - [ ] **Milestone:** Final project submission and presentation. *(Assigned to: All)*
