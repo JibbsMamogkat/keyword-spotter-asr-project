@@ -1,0 +1,21 @@
+# Python virtual environment and cache
+venv/
+__pycache__/
+*.pyc
+
+# IDE-specific files (Visual Studio Code)
+.vscode/
+
+# Data files - To avoid committing large audio files to GitHub
+data/raw/*
+data/cleaned/*
+
+# Model files - Whisper caches models elsewhere, but this is good practice
+models/*
+
+# Experiment results - Ignore generated transcripts and plots
+results/*
+
+# Exception: Un-ignore .gitkeep files
+# This allows Git to track your empty directories.
+!*.gitkeep
