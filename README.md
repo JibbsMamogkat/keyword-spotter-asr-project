@@ -117,9 +117,9 @@ python src/main.py --audio_file "data/raw/noisy_lecture.wav" --keyword "Fourier"
 This is our high-level plan to guide the development process.
 
 ### **Week 1: Foundations & Setup**
-- [ ] Finalize project scope and choose target noisy audio for testing. *(Assigned to: All)*
-- [ ] Set up the complete ASR environment (PyTorch+CUDA, FFmpeg, Whisper). *(Assigned to: ____)*
-- [ ] **Milestone:** Successfully transcribe a clean audio file using a "Hello Whisper" script. *(Assigned to: ____)*
+- [x] Finalize project scope and choose target noisy audio for testing. *(Assigned to: All)*
+- [x] Set up the complete ASR environment (PyTorch+CUDA, FFmpeg, Whisper). *(Assigned to: ____)*
+- [x] **Milestone:** Successfully transcribe a clean audio file using a "Hello Whisper" script. *(Assigned to: ____)*
 - [ ] Research and understand **Spectral Subtraction** and **Wiener Filtering** algorithms. *(Assigned to: ____)*
 
 ### **Week 2: DSP Module Implementation**
