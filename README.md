@@ -130,13 +130,13 @@ This is our high-level plan to guide the development process.
 - [x] **Milestone:** Successfully clean a noisy audio file using **all implemented methods** and verify the results by listening and viewing spectrograms. *(Assigned to: ____)*
 
 ### **Week 3: Integration & Experimentation**
-- [ ] Write the ASR wrapper in `src/asr/transcribe.py` to handle Whisper transcription and timestamp extraction. *(Assigned to: ____)*
-- [ ] Write the `main.py` script to automate the experiment. It should loop through all test files and all DSP methods. *(Assigned to: ____)*
-- [ ] **Milestone:** Run the full automated pipeline and generate the final `results.csv` file. *(Assigned to: All)*
-- [ ] Begin analyzing the results and generating initial plots. *(Assigned to: All)*
+- [x] Write the ASR wrapper in `src/asr/transcribe.py` to handle Whisper transcription and timestamp extraction. *(Assigned to: ____)*
+- [x] Write the `main.py` script to automate the experiment. It should loop through all test files and all DSP methods. *(Assigned to: ____)*
+- [x] **Milestone:** Run the full automated pipeline and generate the final `results.csv` file. *(Assigned to: All)*
+- [x] Begin analyzing the results and generating initial plots. *(Assigned to: All)*
 
 ### **Week 4: Finalization**
-- [ ] Complete the analysis of the experiment results, creating plots and tables that compare the effectiveness of the DSP methods. *(Assigned to: ____)*
+- [x] Complete the analysis of the experiment results, creating plots and tables that compare the effectiveness of the DSP methods. *(Assigned to: ____)*
 - [ ] Write the final project report, focusing on the methodology, results, and discussion of the trade-offs discovered. *(Assigned to: All)*
 - [ ] Create the final presentation slides. *(Assigned to: All)*
 - [ ] **Milestone:** Final project submission and presentation. *(Assigned to: All)*
