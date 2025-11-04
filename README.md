@@ -1,10 +1,15 @@
-# DSP-Enhanced Keyword Spotting System
+# DSP-Enhanced Audio Search ("Ctrl+F" for Audio)
 
-**Status:** In Development
+**Status:** Phase 4 (ML Development) In Progress
 
-This project is a Python-based application designed to find spoken keywords in noisy audio files. It features custom-built Digital Signal Processing (DSP) modules for audio cleaning and leverages a self-hosted, state-of-the-art Automatic Speech Recognition (ASR) model (OpenAI's Whisper) for transcription.
+This project is a Python-based application designed to find spoken keywords in noisy audio files. It functions as a "Ctrl+F for audio," allowing a user to load a noisy audio file, type a keyword, and receive a list of timestamps where that word was spoken.
 
-The core of this project is a practical investigation into the central challenge of speech enhancement for ASR: the trade-off between noise reduction and the introduction of processing artifacts that can degrade ASR performance. Our primary goal is to implement, compare, and tune classic DSP noise reduction algorithms to **maximize the final ASR accuracy**, not just subjective listening quality.
+To achieve this, the system first cleans the audio using an advanced enhancement front-end. The core of this project is a comprehensive investigation to find the best enhancement method:
+1.  **Classic DSP Methods:** We implement and compare Spectral Subtraction, Wiener Filtering, and a Hybrid method.
+2.  **Modern ML Method:** We build a deep learning (CNN) model as a state-of-the-art benchmark.
+3.  **ASR Backend:** We leverage a self-hosted Whisper ASR model to perform the transcription.
+
+The final, objective metric for success is the **Word Error Rate (WER)**. Our goal is to find the enhancement method that provides the lowest WER, proving its effectiveness for machine listening.
 
 This project is being developed for the CPE113L-1 Digital Signal Processing (Laboratory) course.
 
@@ -12,18 +17,19 @@ This project is being developed for the CPE113L-1 Digital Signal Processing (Lab
 
 ## 🚀 Key Features
 
-* **Comparative DSP Implementation:** Implements and compares classic DSP noise reduction algorithms, including **Spectral Subtraction** and **Wiener Filtering**.
-* **Advanced Hybrid Method:** Explores an advanced hybrid technique inspired by recent literature that combines principles from both methods to better handle non-stationary noise.
-* **Self-Hosted ASR:** Uses OpenAI's Whisper model locally for fast, private, and powerful speech-to-text transcription.
-* **Performance Analysis:** Designed to empirically measure the ASR accuracy improvement provided by each DSP cleaning module using the Word Error Rate (WER) metric.
+* **Comparative DSP Implementation:** Implements and compares classic DSP noise reduction algorithms: **Spectral Subtraction**, **Wiener Filtering**, and an advanced **Hybrid Method**.
+* **State-of-the-Art ML Implementation:** Includes a **Machine Learning (CNN)**-based audio denoiser to be compared against the classic DSP methods.
+* **Self-Hosted ASR:** Uses OpenAI's Whisper model (GPU-accelerated) for fast, private, and powerful speech-to-text transcription with word-level timestamps.
+* **"Ctrl+F" Functionality:** The final GUI application allows a user to load an audio file, type a keyword, and instantly find all occurrences (with timestamps) of that word in the file.
+* **Quantitative Performance Analysis:** All enhancement methods are empirically measured and compared using the Word Error Rate (WER) metric to find the optimal solution.
 
 ---
 
 ## ⚙️ System Workflow
 
-The system operates as a sequential pipeline:
+The final application will operate on the following workflow:
 
-`[Noisy Audio File]` → `[Our DSP Cleaning Module (SS, WF, or Hybrid)]` → `[Cleaned Audio]` → `[Whisper ASR Model]` → `[Timestamped Transcript]` → `[Text Search]` → `[Final Timestamps]`
+`[User Loads Noisy Audio File]` → `[User Types Keyword]` → `[Python GUI (Tkinter/PyQt)]` → `[Best Enhancement Module (DSP or ML)]` → `[Cleaned Audio]` → `[Whisper ASR (with Timestamps)]` → `[Text Search Logic]` → `[Display List of Timestamps]`
 
 ---
 
@@ -38,20 +44,25 @@ keyword-asr-project/
 │
 ├── data/
 │   ├── raw/            # Input noisy audio files (e.g., from NOIZEUS)
-│   └── cleaned/        # Output of the DSP modules
+│   ├── cleaned/        # Output of the DSP modules
+│   └── training/       # (New) For generated (noisy, clean) ML training pairs
+│
+├── models/             # (New) To store the trained ML model (e.g., cnn_denoiser.h5)
 │
 ├── notebooks/          # Jupyter notebooks for research & prototyping
 │
 ├── results/            # Stores output transcripts and plots
-│   ├── plots/
-│   └── transcripts/
 │
 ├── src/                # All source code
 │   ├── dsp/            # DSP cleaning module
 │   │   └── noise_reduction.py
 │   ├── asr/            # Wrapper for the Whisper ASR model
 │   │   └── transcribe.py
-│   └── main.py         # Main script to run the automated experiment
+│   ├── ml/             # (New) ML model definition and training scripts
+│   │   ├── build_dataset.py
+│   │   └── train.py
+│   ├── main.py         # Main script to run the automated experiment
+│   └── app.py          # (New) The final GUI application
 │
 └── venv/               # Python virtual environment
 ```
@@ -60,7 +71,7 @@ keyword-asr-project/
 
 ## 🛠️ Setup and Installation
 
-Follow these steps to set up the development environment.
+*(No changes from your previous version)*
 
 **1. Prerequisites:**
 * Python 3.8+
@@ -83,63 +94,66 @@ source venv/bin/activate
 ```
 
 **4. Install PyTorch with CUDA Support:**
-This is the most critical step to enable GPU acceleration. Go to the [Official PyTorch Website](https://pytorch.org/get-started/locally/) and select the correct options (e.g., Stable, Windows/Linux, Pip, Python, CUDA) to get your specific installation command.
+Go to the [Official PyTorch Website](https://pytorch.org/get-started/locally/) and run their recommended install command for your system (Pip, CUDA).
 
 **5. Install FFmpeg:**
-Whisper requires FFmpeg to be installed on your system.
-* **Windows:** Use Chocolatey: `choco install ffmpeg`
-* **macOS:** Use Homebrew: `brew install ffmpeg`
-* **Linux:** Use apt: `sudo apt update && sudo apt install ffmpeg`
+* **Windows:** `choco install ffmpeg`
+* **macOS:** `brew install ffmpeg`
+* **Linux:** `sudo apt update && sudo apt install ffmpeg`
 
 **6. Install Python Dependencies:**
-Once PyTorch and FFmpeg are set up, install the rest of the libraries from the `requirements.txt` file.
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## ▶️ How to Use
+## 📝 Extended Project Plan & To-Do List
 
-The main script is designed to run the full automated experiment and save the results.
+This is our extended plan, which includes our completed experimental phase and the new development phases.
 
-```bash
-# To run the full experiment on all configured data and methods
-python src/main.py
-```
+### **Phase 1: Foundations & Setup (Weeks 1) - Complete**
+- [x] Finalized project scope and chose the NOIZEUS corpus for testing.
+- [x] Set up the complete ASR environment (PyTorch+CUDA, FFmpeg, Whisper).
+- [x] **Milestone:** Successfully transcribed a clean audio file using the GPU.
+- [x] Researched **Spectral Subtraction** and **Wiener Filtering** algorithms.
 
-Individual methods can also be tested from within the `src/dsp/noise_reduction.py` script for quick verification.
+### **Phase 2: DSP Module Implementation (Weeks 2) - Complete**
+- [x] Implemented **Spectral Subtraction**, **Wiener Filtering**, and the **Hybrid Method** in `src/dsp/noise_reduction.py`.
+- [x] **Milestone:** Verified that all three DSP methods successfully process noisy audio and produce cleaned output files.
+
+### **Phase 3: Integration & DSP Experimentation (Weeks 3) - Complete**
+- [x] Wrote the ASR wrapper (`src/asr/transcribe.py`) and the automated experiment script (`src/main.py`).
+- [x] **Milestone:** Ran the full automated pipeline and generated the final `results.csv` file, comparing all DSP methods against the baseline.
+- [x] **Key Finding:** Analysis of `results.csv` shows that while classic DSP methods provide improvement in high-noise (0-5dB), they are harmful in low-noise (15dB), justifying the need for a more advanced approach.
 
 ---
+### **Phase 4: Machine Learning (ML) Enhancement (Weeks 4-5)**
+- [ ] **Research:** Learn and decide on a simple CNN/U-Net architecture for audio denoising (based on our literature).
+- [ ] **Data Preparation:** Write a script (`src/ml/build_dataset.py`) to create a training dataset of `(noisy_spectrogram, clean_spectrogram)` pairs from our source files.
+- [ ] **Implementation & Training:** Build the ML model in Keras/TensorFlow and train it on the new dataset in a notebook (`notebooks/ml_model.ipynb`).
+- [ ] **Milestone:** Save a trained ML model (`models/cnn_denoiser.h5`) that can clean a noisy spectrogram.
 
-## 📝 4-Week Development Plan & To-Do List
+### **Phase 5: Final "Bake-Off" Experiment (Week 6)**
+- [ ] **Integration:** Add a new `ml_enhancer()` function to `src/dsp/noise_reduction.py` that loads the trained model and runs inference.
+- [ ] **Modify `src/main.py`:** Add the new `ml_enhancer()` function to the main experiment loop.
+- [ ] **Milestone:** Run the full automated experiment one last time, now including the ML model.
+- [ ] **Analysis:** Update `analyze_results.ipynb` to plot all methods (Baseline, SS, WF, Hybrid, ML) and determine the single best-performing method.
 
-This is our high-level plan to guide the development process.
+### **Phase 6: GUI "Ctrl+F" Application (Weeks 7-8)**
+- [ ] **GUI Design:** Choose a framework (e.g., Tkinter) and build the user interface for `src/app.py`. (Buttons: Load Audio, Search. Fields: Keyword, Results).
+- [ ] **Backend Logic:** Implement the "search" button functionality:
+    1.  Load the audio file.
+    2.  Clean the audio using the **best-performing method** from Phase 5.
+    3.  Run Whisper transcription on the cleaned audio with `word_timestamps=True`.
+    4.  Implement the text search logic to find the keyword and extract its timestamps.
+    5.  Display the list of timestamps in the GUI.
+- [ ] **Milestone:** A functional, user-friendly application that can successfully find a typed keyword in a noisy audio file.
 
-### **Week 1: Foundations & Setup (Complete)**
-- [x] Finalize project scope and choose target noisy audio for testing.
-- [x] Set up the complete ASR environment (PyTorch+CUDA, FFmpeg, Whisper).
-- [x] **Milestone:** Successfully transcribe a clean audio file using a "Hello Whisper" script.
-- [x] Research and understand **Spectral Subtraction** and **Wiener Filtering** algorithms.
-
-### **Week 2: DSP Module Implementation**
-- [x] Implement the **Spectral Subtraction** algorithm in `src/dsp/noise_reduction.py`. *(Assigned to: ____)*
-- [x] Implement the **Wiener Filtering** algorithm in the same module. *(Assigned to: ____)*
-- [x] (Optional) Implement the **Hybrid Method** inspired by the literature. *(Assigned to: ____)*
-- [x] Create a test notebook in `notebooks/` to test all implemented cleaning functions individually. *(Assigned to: ____)*
-- [x] **Milestone:** Successfully clean a noisy audio file using **all implemented methods** and verify the results by listening and viewing spectrograms. *(Assigned to: ____)*
-
-### **Week 3: Integration & Experimentation**
-- [x] Write the ASR wrapper in `src/asr/transcribe.py` to handle Whisper transcription and timestamp extraction. *(Assigned to: ____)*
-- [x] Write the `main.py` script to automate the experiment. It should loop through all test files and all DSP methods. *(Assigned to: ____)*
-- [x] **Milestone:** Run the full automated pipeline and generate the final `results.csv` file. *(Assigned to: All)*
-- [x] Begin analyzing the results and generating initial plots. *(Assigned to: All)*
-
-### **Week 4: Finalization**
-- [x] Complete the analysis of the experiment results, creating plots and tables that compare the effectiveness of the DSP methods. *(Assigned to: ____)*
-- [ ] Write the final project report, focusing on the methodology, results, and discussion of the trade-offs discovered. *(Assigned to: All)*
-- [ ] Create the final presentation slides. *(Assigned to: All)*
-- [ ] **Milestone:** Final project submission and presentation. *(Assigned to: All)*
+### **Phase 7: Final Documentation (Week 9)**
+- [ ] Write the final project report, focusing on the comparison between classic DSP and modern ML methods.
+- [ ] Create the final presentation slides, including a video demo of the GUI application.
+- [ ] **Milestone:** Final project submission and presentation.
 
 ---
 
