@@ -71,7 +71,6 @@ keyword-asr-project/
 
 ## 🛠️ Setup and Installation
 
-*(No changes from your previous version)*
 
 **1. Prerequisites:**
 * Python 3.8+
