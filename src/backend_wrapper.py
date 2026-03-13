@@ -53,7 +53,7 @@ def process_audio_search(input_audio_path, keyword, dsp_method):
     # --- 3. Transcribe with Whisper ---
     print("[Backend] Running Whisper (this may take a moment)...")
     model = load_model("base") # Or whichever size your team agreed on
-    whisper_result = transcribe_with_timestamps(model, cleaned_audio, sample_rate)
+    whisper_result = transcribe_with_timestamps(model, cleaned_audio_path)
     
     # --- 4. Search for the Keyword ---
     print(f"[Backend] Searching for keyword: '{keyword}'")
@@ -81,7 +81,8 @@ def process_audio_search(input_audio_path, keyword, dsp_method):
         "status": "success",
         "cleaned_audio_path": cleaned_audio_path,
         "matches_found": len(matches),
-        "results": matches
+        "results": matches,
+        "full_text": whisper_result.get("text", "") # <--- ADD THIS LINE
     }
 
 # --- Quick Test ---
