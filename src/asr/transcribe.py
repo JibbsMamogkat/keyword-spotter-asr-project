@@ -42,3 +42,17 @@ def transcribe_audio(model, audio_data, sample_rate):
         
     result = model.transcribe(audio_data, fp16=torch.cuda.is_available())
     return normalize_text(result["text"])
+
+
+def transcribe_with_timestamps(model, audio_data, sample_rate):
+    """
+    Transcribes audio and returns the full result dictionary including word-level timestamps.
+    Crucial for the GUI search functionality.
+    """
+    # Normalize audio for Whisper
+    if audio_data.dtype != np.float32:
+        audio_data = audio_data.astype(np.float32) / 32767.0
+        
+    # Notice the added 'word_timestamps=True' parameter!
+    result = model.transcribe(audio_data, fp16=torch.cuda.is_available(), word_timestamps=True)
+    return result
