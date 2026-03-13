@@ -16,6 +16,8 @@ models/*
 # Experiment results - Ignore generated transcripts and plots
 results/*
 
+temp_audio/
+
 # Exception: Un-ignore .gitkeep files
 # This allows Git to track your empty directories.
 !*.gitkeep

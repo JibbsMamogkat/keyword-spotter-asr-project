@@ -4,6 +4,13 @@ import time
 
 
 from backend_wrapper import process_audio_search
+
+def format_time(seconds):
+    """Converts raw seconds into MM:SS.xx format"""
+    minutes = int(seconds // 60)
+    remaining_seconds = seconds % 60
+    # Format to 2 digits for minutes, and 5 chars (2 digits, 1 dot, 2 decimals) for seconds
+    return f"{minutes:02d}:{remaining_seconds:05.2f}"
 # --- SETUP & CONFIGURATION ---
 # This sets the browser tab title and layout width
 st.set_page_config(page_title="Audio Ctrl+F", layout="wide")
@@ -92,12 +99,16 @@ if process_button:
             full_transcript = backend_response.get("full_text", "No text found.")
             st.markdown(f"**📝 Full Whisper Transcript:** _{full_transcript}_")
             st.divider()
-            
+
             # Display List of Timestamps
             if found_timestamps:
                 st.write(f"Found **{len(found_timestamps)}** occurrences of '{keyword}':")
                 
                 for match in found_timestamps:
-                    st.info(f"⏱️ **[{match['start']}s - {match['end']}s]** -> {match['word']}")
+                    # Convert the raw seconds to MM:SS format
+                    start_str = format_time(match['start'])
+                    end_str = format_time(match['end'])
+                    
+                    st.info(f"⏱️ **[{start_str} - {end_str}]** -> {match['word']}")
             else:
                 st.warning(f"Keyword '{keyword}' not found in the audio.")
