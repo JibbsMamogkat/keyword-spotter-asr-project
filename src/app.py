@@ -1,7 +1,9 @@
 import streamlit as st
 import os
 import time
-
+import matplotlib.pyplot as plt
+import scipy.io.wavfile as wavfile
+import numpy as np
 
 from backend_wrapper import process_audio_search
 
@@ -11,6 +13,27 @@ def format_time(seconds):
     remaining_seconds = seconds % 60
     # Format to 2 digits for minutes, and 5 chars (2 digits, 1 dot, 2 decimals) for seconds
     return f"{minutes:02d}:{remaining_seconds:05.2f}"
+
+def plot_spectrogram(audio_path, title):
+    """Generates a spectrogram figure from a wav file."""
+    sample_rate, data = wavfile.read(audio_path)
+    
+    # Force mono if it's stereo so the graph doesn't crash
+    if len(data.shape) > 1:
+        data = np.mean(data, axis=1)
+
+    # Create the graph
+    fig, ax = plt.subplots(figsize=(6, 3))
+    
+    # 'viridis' is a standard scientific color map (purple to yellow)
+    ax.specgram(data, Fs=sample_rate, NFFT=256, noverlap=128, cmap='viridis')
+    ax.set_title(title)
+    ax.set_ylabel('Frequency (Hz)')
+    ax.set_xlabel('Time (s)')
+    fig.tight_layout()
+    
+    return fig
+
 # --- SETUP & CONFIGURATION ---
 # This sets the browser tab title and layout width
 st.set_page_config(page_title="Audio Ctrl+F", layout="wide")
@@ -81,7 +104,7 @@ if process_button:
             
             # --- 3. UPDATE UI (Results Dashboard) ---
             st.divider()
-            st.subheader("📊 Results")
+            st.subheader("📊 Results & Spectrograms")
             
             col1, col2 = st.columns(2)
             
@@ -89,13 +112,21 @@ if process_button:
                 st.markdown("**1. Original Noisy Audio:**")
                 st.audio(temp_file_path) # Plays the raw uploaded file
                 
+                # Generate and show Original Spectrogram
+                fig_orig = plot_spectrogram(temp_file_path, "Original Spectrogram")
+                st.pyplot(fig_orig)
+                
             with col2:
                 st.markdown(f"**2. Cleaned Audio ({dsp_method}):**")
-                st.audio(cleaned_audio_path) # Plays the processed file from Member 2!
+                st.audio(cleaned_audio_path) # Plays the processed file
+                
+                # Generate and show Cleaned Spectrogram
+                fig_clean = plot_spectrogram(cleaned_audio_path, f"Cleaned ({dsp_method})")
+                st.pyplot(fig_clean)
             
             st.divider()
 
-            # --- NEW: Show the full transcript ---
+            # --- Show the full transcript ---
             full_transcript = backend_response.get("full_text", "No text found.")
             st.markdown(f"**📝 Full Whisper Transcript:** _{full_transcript}_")
             st.divider()

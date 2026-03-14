@@ -46,11 +46,8 @@ def transcribe_audio(model, audio_data, sample_rate):
 
 def transcribe_with_timestamps(model, audio_path):
     """
-    Transcribes audio and returns the full result dictionary including word-level timestamps.
-    Crucial for the GUI search functionality.
+    By passing the file path (string) instead of the numpy array, 
+    Whisper uses ffmpeg to automatically resample the 8kHz NOIZEUS file to 16kHz!
     """
-    # By passing the file path (string) instead of the numpy array, 
-    # Whisper uses ffmpeg to automatically resample the 8kHz NOIZEUS file to 16kHz!
     result = model.transcribe(audio_path, fp16=torch.cuda.is_available(), word_timestamps=True)
-    
     return result
